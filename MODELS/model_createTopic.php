@@ -1,9 +1,13 @@
 <?php
 //create_cat.php
 include 'CONFIG/connection.php';
-
+$table = 'categories';
+$table2 = 'topics';
+$table3 = 'replies';
 echo '<h2>Create a topic</h2>';
-if($_SESSION['signed_in'] == FALSE)
+
+
+if($_SESSION['loggedin'] == FALSE)
 {
     //the user is not signed in
     echo 'Sorry, you have to be <a href="/forum/signin.php">signed in</a> to create a topic.';
@@ -16,11 +20,11 @@ else
         //the form hasn't been posted yet, display it
         //retrieve the categories from the database for use in the dropdown
         $sql = "SELECT
-                    cat_id,
-                    cat_name,
-                    cat_description
+                    ID_Cat,
+                    Name_Cat,
+                    Description_Cat
                 FROM
-                    categories";
+                    k00223375_gameforum.$table";
 
         $result = mysql_query($sql);
 
@@ -53,11 +57,11 @@ else
                 echo '<select name="topic_cat">';
                     while($row = mysql_fetch_assoc($result))
                     {
-                        echo '<option value="' . $row['cat_id'] . '">' . $row['cat_name'] . '</option>';
+                        echo '<option value="' . $row['ID_Cat'] . '">' . $row['Name_Cat'] . '</option>';
                     }
-                echo '</select>';
+                echo '</select><br>';
 
-                echo 'Message: <textarea name="post_content" /></textarea>
+                echo 'Message: <textarea name="post_content" /></textarea><br>
                     <input type="submit" value="Create topic" />
                  </form>';
             }
@@ -79,18 +83,16 @@ else
 
             //the form has been posted, so save it
             //insert the topic into the topics table first, then we'll save the post into the posts table
-            $sql = "INSERT INTO
-                        topics(topic_subject,
-                               topic_date,
-                               topic_cat,
-                               topic_by)
-                   VALUES('" . mysql_real_escape_string($_POST['topic_subject']) . "',
-                               NOW(),
-                               " . mysql_real_escape_string($_POST['topic_cat']) . ",
-                               " . $_SESSION['user_id'] . "
-                               )";
+            $topicName = mysql_real_escape_string($_POST['topic_subject']);
+            $topicDes = mysql_real_escape_string($_POST['topic_cat']);
+
+
+
+            $sql = "INSERT INTO k00223375_gameforum.$table2 (Topic_Subject, Topic_Date, Topic_ID_Cat, Topic_ID_Users)
+                   VALUES('$topicName', NOW(),'$topicDes',".$_SESSION['ID_Users'].")";
 
             $result = mysql_query($sql);
+
             if(!$result)
             {
                 //something went wrong, display the error
@@ -103,18 +105,9 @@ else
                 //the first query worked, now start the second, posts query
                 //retrieve the id of the freshly created topic for usage in the posts query
                 $topicid = mysql_insert_id();
-
-                $sql = "INSERT INTO
-                            posts(post_content,
-                                  post_date,
-                                  post_topic,
-                                  post_by)
-                        VALUES
-                            ('" . mysql_real_escape_string($_POST['post_content']) . "',
-                                  NOW(),
-                                  " . $topicid . ",
-                                  " . $_SESSION['user_id'] . "
-                            )";
+                $topicReply = mysql_real_escape_string($_POST['post_content']);
+                $sql = "INSERT INTO k00223375_gameforum.$table3(Reply_Content, Reply_Date, Reply_ID_Topic, Reply_ID_Users)
+                        VALUES('$topicReply', NOW(),$topicid,".$_SESSION['ID_Users'].")";
                 $result = mysql_query($sql);
 
                 if(!$result)

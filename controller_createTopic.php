@@ -1,10 +1,9 @@
 <?php
 //set some application settings
 //use a bootstrap template
-$_SESSION['signed_in']=TRUE;
-$loggedin=TRUE;  //is a user logged in
+session_start();
 
-if($loggedin){  //user is logged in
+if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true){  //user is logged in
 	include("MODELS/model_createTopic.php");  //the model represents all of the data in our application
 	include("VIEWS/view_createTopic.php"); //use the bootstrap template for user logged in
 

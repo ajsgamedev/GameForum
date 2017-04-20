@@ -2,7 +2,7 @@
 //includes
 include("CONFIG/connection.php");  //include the database connection
 include("CONFIG/config.php");  //include the application configuration settings
-
+session_start();
 //variables
 $tab="Register";
 
@@ -15,8 +15,9 @@ if(isset($_POST['btn_register'])){
 			include("VIEWS/view_register_result.php");
 
 		}
-else{
+		else
+		{
 			include("MODELS/model_register.php");
 			include("VIEWS/view_register.php");
-}
+		}
 ?>

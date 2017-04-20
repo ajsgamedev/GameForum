@@ -2,18 +2,17 @@
 //signin.php
 include 'CONFIG/connection.php';
 include 'CONFIG/config.php';
-
-echo '<h3>Sign in</h3>';
-
+session_start();
 $table = 'users';
 
-$username =$conn->mysql_real_escape_string($_POST['user_name']);
+$username =$_POST['user_name'];
 $pass1 = $_POST['user_pass'];
 
 //first, check if the user is already signed in. If that is the case, there is no need to display this page
-if(isset($_SESSION['signed_in']) && $_SESSION['signed_in'] == true)
+if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
 {
-    echo 'You are already signed in, you can <a href="signout.php">sign out</a> if you want.';
+    include 'FORMS/navBarSuccessReg.php';
+    echo 'You are already signed in, you can <a href="controller_main.php">sign out</a> if you want.';
 }
 else
 {
@@ -21,7 +20,8 @@ else
     {
         /*the form hasn't been posted yet, display it
           note that the action="" will cause the form to post to the same page it is on */
-        include 'FORMS/loginForm.html';
+      //  include 'FORMS/loginForm.html';
+        include 'VIEWS/view_login.php';
     }
     else
     {
@@ -59,7 +59,7 @@ else
             //also notice the sha1 function which hashes the password
 
 						$HashPassW = hash('ripemd160', $_POST['user_pass']);
-            $sql = "SELECT ID_User, User_Name, User_Level  FROM $table WHERE User_Name = '$username' AND User_Pass = '$HashPassW'";
+            $sql = "SELECT ID_Users, User_Name, User_Level  FROM k00223375_gameforum.$table WHERE User_Name = '$username' AND User_Pass = '$HashPassW'";
 
             $result = mysql_query($sql);
 
@@ -81,17 +81,18 @@ else
                 else
                 {
                     //set the $_SESSION['signed_in'] variable to TRUE
-                    $_SESSION['signed_in'] = true;
+                    $_SESSION['loggedin'] = true;
 
                     //we also put the user_id and user_name values in the $_SESSION, so we can use it at various pages
                     while($row = mysql_fetch_assoc($result))
                     {
-                        $_SESSION['user_id']  = $row['user_id'];
-                        $_SESSION['user_name']  = $row['user_name'];
-                        $_SESSION['user_level'] = $row['user_level'];
+                        $_SESSION['ID_Users']  = $row['ID_Users'];
+                        $_SESSION['User_Name']  = $row['User_Name'];
+                        $_SESSION['User_Level'] = $row['User_Level'];
                     }
+                    include 'FORMS/navBarSuccessReg.php';
 
-                    echo 'Welcome, ' . $_SESSION['user_name'] . '. <a href="controller_main.php">Proceed to the forum overview</a>.';
+                    echo 'Welcome, ' . $_SESSION['User_Name'] . '. <a href="controller_main.php">Proceed to the forum overview</a>.';
                 }
             }
         }

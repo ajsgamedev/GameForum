@@ -33,7 +33,7 @@
         <!-- Collection of nav links and other content for toggling -->
         <div id="navbarCollapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="controller_login.php">Login</a></li>
+                <li><a href="controller_register.php">Register</a></li>
             </ul>
         </div>
     </div>
