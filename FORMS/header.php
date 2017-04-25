@@ -28,7 +28,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand">AJS Game Dev Forum</a>
+            <a href="controller_main.php" class="navbar-brand">AJS Game Dev Forum</a>
         </div>
 
 
